@@ -11,6 +11,11 @@ import { catchError, tap } from "rxjs/operators";
 export class HeroService {
 
   private heroURL = 'api/heroes';
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  }
 
   constructor(
     private messageService: MessageService,
@@ -28,9 +33,30 @@ export class HeroService {
       );
   }
 
-  // getHeroByID(id: number): Observable<Hero> {
-  //   return of(HEROLIST.find(hero => hero.id === id))
-  // }
+  /**
+   * get Hero by ID
+   * @param id - id of hero
+   * @returns Observable<Hero>
+   */
+  getHeroByID(id: number): Observable<Hero> {
+    const url = `${this.heroURL}/${id}`;
+    return this.http.get<Hero>(url).pipe(
+      tap(_ => this.log(`fetched hero with id = ${id}`)),
+      catchError(this.handleError<Hero>(`getHero id = ${id}`))
+    )
+  }
+
+  /**
+   * this function using for update hero.
+   * @param hero - hero to be updated
+   * @returns - return Observable<any>
+   */
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(this.heroURL, hero, this.httpOptions).pipe(
+      tap(_ => this.log(`update heroes with id = ${hero.id}`)),
+      catchError(this.handleError<any>(`updatehero`))
+    )
+  }
 
   /**
    * add message to message service that render messages
