@@ -11,7 +11,6 @@ import { Location } from "@angular/common";
 })
 export class HeroDetailComponent implements OnInit {
 
-  @Input()
   hero: Hero
 
   constructor(
